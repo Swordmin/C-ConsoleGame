@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class StartGame
 {
@@ -11,15 +12,11 @@ public class StartGame
 
     private delegate void playerChoose(string text);
 
-
-    public StartGame()
-	{
-
-	}
+    List<Item> inventory = new List<Item>();
 
     public void InitializationGame()
     {
-        hero = new Hero(100, 5, 5, 10);
+        hero = new Hero(100, 5, 5, 10, 0);
         WriteConsole("Введите ваше имя");
         playerName = Console.ReadLine();
         WriteConsole("Ваше здоровье " + hero.GetHealth(0) + " Ваш урон " + hero.GetDamage(0) + " Ваша ловкость " + hero.GetAgility(0) + " Ваша сила " + hero.GetDamage(0));
@@ -52,6 +49,13 @@ public class StartGame
                 case "Atack":
                     PlayerAction("Atack");
                     break;
+                case "Inventory":
+                    WriteInventory();
+                    break;
+                case "Add":
+                    SpawnItem();
+                    break;
+
             }
         }
     }
@@ -60,6 +64,13 @@ public class StartGame
     {
         WriteConsole("Ваше здоровье " + hero.GetHealth(0) + " Ваш урон " + hero.GetDamage(0) + " Ваша ловкость " + hero.GetAgility(0) + " Ваша сила " + hero.GetDamage(0));
     }
+    public void WriteInventory() 
+    {
+        foreach (Item item in inventory) 
+        {
+            WriteConsole(item.GetName());
+        }
+    }
     public void WriteHelp() 
     {
         if (iventId != 0)
@@ -67,6 +78,7 @@ public class StartGame
         else 
             WriteConsole("Go" + " Stats");
     }
+
     public void Ivent() 
     {
         iventId = random.Next(1, 2);
@@ -89,6 +101,7 @@ public class StartGame
     {
         Console.WriteLine(_text);
     }
+
     public void AtackEnemy() 
     {
         var enemyID = 0;
@@ -161,6 +174,8 @@ public class StartGame
                         if (enemy.GetHealth(0) <= 0) 
                         {
                             WriteConsole("Вы победили.");
+                            WriteConsole("Вы получили новый предмет.");
+                            SpawnItem();
                             iventId = 0;
                         }
                     }
@@ -172,6 +187,20 @@ public class StartGame
     {
         var сhance = random.Next(0, 101);
         return сhance < b;
+    }
+
+    public void SpawnItem() 
+    {
+        var chance = 0;
+        chance = random.Next(0, 1);
+        switch (chance) 
+        {
+            case 0:
+                Sword sword = new Sword();
+                sword.Initialization();
+                inventory.Add(sword);
+                break;
+        }
     }
 
 

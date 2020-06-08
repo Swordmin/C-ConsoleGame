@@ -7,15 +7,16 @@ public class Hero
     private float damage;
     private float power;
     private float agility;
+    private float defense;
 
-    public Hero(float _health, float _damage, float _power, float _ability)
+    public Hero(float _health, float _damage, float _power, float _ability, float _defense)
 	{
 
         health = _health;
         damage = _damage;
         power = _power;
         agility = _ability;
-
+        defense = _defense;
 	}
 
     public void SetHealth(float _health) 
