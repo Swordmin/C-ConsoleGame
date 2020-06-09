@@ -54,6 +54,7 @@ public class Enemy
         return agility;
     }
 
+
     public virtual void Atack(Hero hero) { }
 }
 
@@ -68,7 +69,8 @@ public class Skelet : Enemy
 
     public override void Atack(Hero hero) 
     {
-        hero.SetHealth(hero.GetHealth(0) - GetDamage(0));
+        if((GetDamage(0) - hero.GetDefense(0) * 1.25f) > 0)
+            hero.SetHealth(hero.GetHealth(0) - (GetDamage(0) - hero.GetDefense(0) * 1.25f));
     }
 }
 

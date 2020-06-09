@@ -55,6 +55,9 @@ public class StartGame
                 case "Add":
                     SpawnItem();
                     break;
+                case "Equip":
+                    Equip();
+                    break;
 
             }
         }
@@ -62,10 +65,14 @@ public class StartGame
 
     public void WriteStats() 
     {
-        WriteConsole("Ваше здоровье " + hero.GetHealth(0) + " Ваш урон " + hero.GetDamage(0) + " Ваша ловкость " + hero.GetAgility(0) + " Ваша сила " + hero.GetDamage(0));
+        WriteConsole("Ваше здоровье " + hero.GetHealth(0) + " Ваш урон " + hero.GetDamage(0) + " Ваша ловкость " + hero.GetAgility(0) + " Ваша сила " + hero.GetDamage(0) + " Ваша защита " + hero.GetDefense(0));
     }
     public void WriteInventory() 
     {
+        if (inventory.Count <= 0) 
+        {
+            WriteConsole("Инвентарь пуст"); 
+        }
         foreach (Item item in inventory) 
         {
             WriteConsole(item.GetName());
@@ -81,12 +88,16 @@ public class StartGame
 
     public void Ivent() 
     {
-        iventId = random.Next(1, 2);
+        iventId = random.Next(1, 3);
         switch (iventId) 
         {
             case 1:
                 AtackEnemy();
-                break;           
+                break;
+            case 2:
+                WriteConsole("Пусто");
+                iventId = 0;
+                break;
         }
 
     }
@@ -166,17 +177,32 @@ public class StartGame
                             hero.SetAgility(hero.GetAgility(0) + 1);
                             WriteConsole("Ловкость повышена.");
                         }
+                        if (Doodge(50)) 
+                        {
+                            WriteConsole(enemy.GetName("") + " атакует.");
+                            enemy.Atack(hero);
+                            WriteConsole("Получен урон " + enemy.GetDamage(0));
+                        }
                     }
                     else 
                     {
                         enemy.SetHealth(enemy.GetHealth(0) - hero.GetDamage(0));
-                        WriteConsole("Вы нанесли " + enemy.GetDamage(0) + " урона.");
+                        WriteConsole("Вы нанесли " + hero.GetDamage(0) + " урона.");
+                        if (Doodge(50))
+                        {
+                            WriteConsole(enemy.GetName("") + " атакует.");
+                            enemy.Atack(hero);
+                            WriteConsole("Получен урон " + enemy.GetDamage(0));
+                        }
                         if (enemy.GetHealth(0) <= 0) 
                         {
                             WriteConsole("Вы победили.");
-                            WriteConsole("Вы получили новый предмет.");
-                            SpawnItem();
                             iventId = 0;
+                            if (Doodge(40)) 
+                            {
+                                WriteConsole("Вы получили новый предмет.");
+                                SpawnItem();
+                            }
                         }
                     }
                     break;
@@ -192,7 +218,7 @@ public class StartGame
     public void SpawnItem() 
     {
         var chance = 0;
-        chance = random.Next(0, 1);
+        chance = random.Next(0, 6);
         switch (chance) 
         {
             case 0:
@@ -200,6 +226,48 @@ public class StartGame
                 sword.Initialization();
                 inventory.Add(sword);
                 break;
+            case 1:
+                Stick stick = new Stick();
+                stick.Initialization();
+                inventory.Add(stick);
+                break;
+            case 2:
+                Hat hat = new Hat();
+                hat.Initialization();
+                inventory.Add(hat);
+                break;
+            case 3:
+                Bib bib = new Bib();
+                bib.Initialization();
+                inventory.Add(bib);
+                break;
+            case 4:
+                Trousers trousers = new Trousers();
+                trousers.Initialization();
+                inventory.Add(trousers);
+                break;
+            case 5:
+                Boots boots = new Boots();
+                boots.Initialization();
+                inventory.Add(boots);
+                break;
+        }
+    }
+    public void Equip()
+    {
+        WriteConsole("Выбирите предмет который хотите экипировать.");
+        WriteInventory();
+        var itemName = "";
+        Console.Write(playerName + ": ");
+        itemName = Console.ReadLine();
+        foreach (Item item in inventory) 
+        {
+            if (item.GetName() == itemName)
+            {
+                item.Equip(hero);
+                Console.WriteLine("Вы экипировали " + item.GetName());
+                break;
+            }
         }
     }
 
